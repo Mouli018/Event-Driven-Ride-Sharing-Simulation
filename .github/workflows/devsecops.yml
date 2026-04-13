@@ -17,29 +17,50 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Install dependencies & Test
+      - name: Install & Test - Ride Request Service
         run: |
           cd ride-request-service
           pip install -r requirements.txt
-          pytest || echo "No tests written yet, continuing..."
+          pytest test_main.py -v
 
-      - name: SonarQube Scan
-        uses: sonarsource/sonarqube-scan-action@master
+      - name: Install & Test - Matching Service
+        run: |
+          cd matching-service
+          pip install -r requirements.txt
+          pytest test_main.py -v
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         continue-on-error: true
 
-      - name: Build Docker Image
+      - name: Build Ride Request Docker Image
         run: |
           docker build -t ride-request-service:latest ./ride-request-service
 
-      - name: Run Trivy vulnerability scanner
+      - name: Build Matching Service Docker Image
+        run: |
+          docker build -t matching-service:latest ./matching-service
+
+      - name: Run Trivy on Ride Request Service
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'ride-request-service:latest'
           format: 'table'
-          exit-code: '1' # Fails the pipeline on critical vulnerabilities
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+        continue-on-error: true
+
+      - name: Run Trivy on Matching Service
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'matching-service:latest'
+          format: 'table'
+          exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
