@@ -2,15 +2,16 @@
 FROM python:3.11-slim AS builder
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Runtime
 FROM python:3.11-slim
 WORKDIR /app
-# Copy installed dependencies
-COPY --from=builder /root/.local /root/.local
+COPY --from=builder /opt/venv /opt/venv
 COPY . .
-ENV PATH=/root/.local/bin:$PATH
+ENV PATH="/opt/venv/bin:$PATH"
 # Run as non-root user for security
 RUN useradd -m appuser && chown -R appuser /app
 USER appuser
