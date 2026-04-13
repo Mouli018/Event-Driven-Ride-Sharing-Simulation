@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ride-request-deployment
+  namespace: ride-share-prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ride-request
+  template:
+    metadata:
+      labels:
+        app: ride-request
+    spec:
+      containers:
+      - name: ride-request
+        image: ride-request-service:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 3
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ride-request-service
+  namespace: ride-share-prod
+spec:
+  selector:
+    app: ride-request
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer
