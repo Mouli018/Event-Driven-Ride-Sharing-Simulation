@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/your-username/ride-sharing' # Update URL 
+    repoURL: 'https://github.com/Mouli018/Event-Driven-Ride-Sharing-Simulation'
     targetRevision: HEAD
     path: k8s-manifests
   destination:
