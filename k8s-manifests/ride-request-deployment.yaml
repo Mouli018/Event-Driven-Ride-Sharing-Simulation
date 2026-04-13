@@ -16,6 +16,7 @@ spec:
       containers:
       - name: ride-request
         image: ride-request-service:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
         resources:

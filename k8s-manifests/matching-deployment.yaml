@@ -16,6 +16,7 @@ spec:
       containers:
       - name: matching-service
         image: matching-service:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8001
         resources:
