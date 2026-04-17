@@ -43,6 +43,7 @@ resource "helm_release" "argocd" {
   chart      = "argo-cd"
   namespace  = kubernetes_namespace_v1.argocd.metadata[0].name
   version    = "5.46.0"
+  timeout    = 600
 
   set {
     name  = "server.service.type"
@@ -57,6 +58,7 @@ resource "helm_release" "kube-prometheus" {
   create_namespace = true
   repository = "https://prometheus-community.github.io/helm-charts"
   chart      = "kube-prometheus-stack"
+  timeout    = 600
   
   set {
     name  = "grafana.service.type"
