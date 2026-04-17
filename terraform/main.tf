@@ -24,13 +24,13 @@ provider "helm" {
 # Example AWS EKS or DigitalOcean K8s Cluster provisioning would go here
 # Using local kubernetes provider as a mock for the assignment standard
 
-resource "kubernetes_namespace" "ride_share" {
+resource "kubernetes_namespace_v1" "ride_share" {
   metadata {
     name = "ride-share-prod"
   }
 }
 
-resource "kubernetes_namespace" "argocd" {
+resource "kubernetes_namespace_v1" "argocd" {
   metadata {
     name = "argocd"
   }
