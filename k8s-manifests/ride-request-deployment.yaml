@@ -13,6 +13,8 @@ spec:
       labels:
         app: ride-request
     spec:
+      imagePullSecrets:
+      - name: ghcr-login-secret
       containers:
       - name: ride-request
         image: ghcr.io/mouli018/ride-request-service:27ddb7d89ab4ef75c7137b52525e9e10885276c3

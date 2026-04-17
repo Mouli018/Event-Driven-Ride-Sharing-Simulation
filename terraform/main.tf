@@ -1,3 +1,9 @@
+variable "github_token" {
+  description = "GitHub Token for GHCR authentication"
+  type        = string
+  sensitive   = true
+}
+
 terraform {
   required_providers {
     kubernetes = {
@@ -27,6 +33,26 @@ provider "helm" {
 resource "kubernetes_namespace_v1" "ride_share" {
   metadata {
     name = "ride-share-prod"
+  }
+}
+
+# Image Pull Secret for GHCR
+resource "kubernetes_secret_v1" "ghcr_secret" {
+  metadata {
+    name      = "ghcr-login-secret"
+    namespace = kubernetes_namespace_v1.ride_share.metadata[0].name
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
+
+  data = {
+    ".dockerconfigjson" = jsonencode({
+      auths = {
+        "ghcr.io" = {
+          auth = base64encode("token:${var.github_token}")
+        }
+      }
+    })
   }
 }
 

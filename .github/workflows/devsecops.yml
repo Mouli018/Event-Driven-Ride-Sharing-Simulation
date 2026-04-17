@@ -37,7 +37,7 @@ jobs:
         run: |
           cd terraform
           terraform init -upgrade
-          terraform apply -auto-approve
+          terraform apply -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
 
       - name: Set up Python
         uses: actions/setup-python@v4

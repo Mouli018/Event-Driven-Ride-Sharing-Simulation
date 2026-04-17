@@ -13,6 +13,8 @@ spec:
       labels:
         app: matching-service
     spec:
+      imagePullSecrets:
+      - name: ghcr-login-secret
       containers:
       - name: matching-service
         image: ghcr.io/mouli018/matching-service:27ddb7d89ab4ef75c7137b52525e9e10885276c3
