@@ -11,15 +11,9 @@ terraform {
   }
 }
 
-provider "kubernetes" {
-  config_path = "~/.kube/config"
-}
+provider "kubernetes" {}
 
-provider "helm" {
-  kubernetes {
-    config_path = "~/.kube/config"
-  }
-}
+provider "helm" {}
 
 # Example AWS EKS or DigitalOcean K8s Cluster provisioning would go here
 # Using local kubernetes provider as a mock for the assignment standard
