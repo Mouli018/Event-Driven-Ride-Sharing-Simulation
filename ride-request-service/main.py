@@ -1,11 +1,26 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import uuid
-import time
-from prometheus_client import Counter, generate_latest
 from fastapi.responses import PlainTextResponse
+from fastapi.middleware.cors import CORSMiddleware
+import os
 
 app = FastAPI(title="Ride Request Service")
+
+# Security: CORS Policy (Standard Hotspot Fix)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, specify your dashboard domain
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Security: Secure Headers Middleware
+@app.middleware("http")
+async def add_security_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    return response
 
 REQUEST_COUNTER = Counter("ride_requests_total", "Total ride requests made")
 
