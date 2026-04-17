@@ -5,9 +5,20 @@ import time
 from prometheus_client import Counter, generate_latest
 from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 import os
 
-app = FastAPI(title="Ride Request Service")
+# Production Hardening: Disable docs in production/CI
+app = FastAPI(
+    title="Ride Request Service",
+    docs_url=None if os.getenv("ENVIRONMENT") == "production" else "/docs",
+    redoc_url=None if os.getenv("ENVIRONMENT") == "production" else "/redoc"
+)
+
+# Security: Trusted Host Middleware
+app.add_middleware(
+    TrustedHostMiddleware, allowed_hosts=["*"]  # Restrict this in production
+)
 
 # Security: CORS Policy (Standard Hotspot Fix)
 app.add_middleware(

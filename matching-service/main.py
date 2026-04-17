@@ -5,10 +5,21 @@ import time
 from prometheus_client import Counter, Histogram, generate_latest
 from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 import secrets
 import os
 
-app = FastAPI(title="Matching & Status Service")
+# Production Hardening: Disable docs in production/CI
+app = FastAPI(
+    title="Matching & Status Service",
+    docs_url=None if os.getenv("ENVIRONMENT") == "production" else "/docs",
+    redoc_url=None if os.getenv("ENVIRONMENT") == "production" else "/redoc"
+)
+
+# Security: Trusted Host Middleware
+app.add_middleware(
+    TrustedHostMiddleware, allowed_hosts=["*"]  # Restrict this in production
+)
 
 # Security: CORS Policy
 app.add_middleware(
@@ -41,8 +52,8 @@ class MatchRequest(BaseModel):
 @app.post("/match")
 def match_driver(req: MatchRequest):
     with MATCH_LATENCY.time():
-        # Simulate driver matching delay
-        time.sleep(secrets.SystemRandom().uniform(0.1, 0.5))
+        # Simulate driver matching delay (0.1s to 0.5s)
+        time.sleep(0.1 + (secrets.randbelow(40) / 100))
         assigned_driver = secrets.choice(DRIVERS)
         MATCH_COUNTER.inc()
 
@@ -50,7 +61,7 @@ def match_driver(req: MatchRequest):
         "ride_id": req.ride_id,
         "driver": assigned_driver,
         "status": "driver_assigned",
-        "eta_minutes": secrets.SystemRandom().randint(2, 10)
+        "eta_minutes": 2 + secrets.randbelow(9) # 2 to 10 minutes
     }
     return matches_db[req.ride_id]
 
