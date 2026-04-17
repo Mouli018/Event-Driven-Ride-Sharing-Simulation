@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: ride-request
-        image: ride-request-service:latest
+        image: ghcr.io/mouli018/ride-request-service:e4f14fc484f7ccee7661ba1a3d2b0d581ff4515e
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000

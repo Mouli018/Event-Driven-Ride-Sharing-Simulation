@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: matching-service
-        image: matching-service:latest
+        image: ghcr.io/mouli018/matching-service:e4f14fc484f7ccee7661ba1a3d2b0d581ff4515e
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8001
