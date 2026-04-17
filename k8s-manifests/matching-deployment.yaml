@@ -17,7 +17,7 @@ spec:
       - name: ghcr-login-secret
       containers:
       - name: matching-service
-        image: ghcr.io/mouli018/matching-service:444dee1b79da2cb05a34f8de06b3956d62871d78
+        image: ghcr.io/mouli018/matching-service:e12a66172b5f7767b6a76cc3322804964a218a9f
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8001
