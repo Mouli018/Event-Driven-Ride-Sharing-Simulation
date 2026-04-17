@@ -30,14 +30,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Security: Secure Headers Middleware
+# Security: Secure Headers Layer
 @app.middleware("http")
-async def add_security_headers(request, call_next):
-    response = await call_next(request)
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-XSS-Protection"] = "1; mode=block"
-    return response
+async def security_header_middleware(request, call_next):
+    # Process request and get response
+    res = await call_next(request)
+    # Add essential security headers
+    res.headers["X-Frame-Options"] = "DENY"
+    res.headers["X-Content-Type-Options"] = "nosniff"
+    res.headers["X-XSS-Protection"] = "1; mode=block"
+    return res
 
 MATCH_COUNTER = Counter("driver_matches_total", "Total driver matches made")
 MATCH_LATENCY = Histogram("match_latency_seconds", "Time taken to match a driver")
@@ -77,4 +79,4 @@ def metrics():
 
 @app.get("/health")
 def healthz():
-    return {"status": "ok"}
+    return {"status": "ok", "service": "matching-engine"}

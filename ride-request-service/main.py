@@ -29,14 +29,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Security: Secure Headers Middleware
+# Security: Secure Headers Middleware (Refactored to reduce duplication)
 @app.middleware("http")
 async def add_security_headers(request, call_next):
-    response = await call_next(request)
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-XSS-Protection"] = "1; mode=block"
-    return response
+    resp = await call_next(request)
+    headers_to_add = {
+        "X-Frame-Options": "DENY",
+        "X-Content-Type-Options": "nosniff",
+        "X-XSS-Protection": "1; mode=block"
+    }
+    for h_name, h_val in headers_to_add.items():
+        resp.headers[h_name] = h_val
+    return resp
 
 REQUEST_COUNTER = Counter("ride_requests_total", "Total ride requests made")
 
@@ -66,4 +70,4 @@ def metrics():
 
 @app.get("/health")
 def healthz():
-    return {"status": "ok"}
+    return {"status": "ok", "service": "ride-request"}
