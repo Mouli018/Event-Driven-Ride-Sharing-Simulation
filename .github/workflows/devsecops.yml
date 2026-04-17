@@ -102,14 +102,14 @@ jobs:
           
           echo "Waiting for ArgoCD Application to become Healthy..."
           # Wait for the Application status to reach 'Healthy' (up to 10 minutes)
-          for i in {1..30}; do
+          for i in {1..20}; do
             STATUS=$(kubectl get application ride-share-app -n argocd -o jsonpath='{.status.health.status}' 2>/dev/null || echo "Unknown")
             echo "Current Status: $STATUS"
             if [ "$STATUS" == "Healthy" ]; then
               echo "Deployment Successful and Healthy!"
               exit 0
             fi
-            sleep 20
+            sleep 30
           done
           echo "Timeout waiting for healthy status"
           exit 1
