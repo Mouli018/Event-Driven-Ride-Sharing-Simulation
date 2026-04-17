@@ -17,7 +17,7 @@ spec:
       - name: ghcr-login-secret
       containers:
       - name: ride-request
-        image: ghcr.io/mouli018/ride-request-service:adc09dafa9ac2433d705d7003d2d58ab37085e83
+        image: ghcr.io/mouli018/ride-request-service:75419a2bde621837ba1194ecd5d823662bb9e356
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
