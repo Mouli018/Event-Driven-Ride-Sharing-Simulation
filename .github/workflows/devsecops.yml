@@ -34,10 +34,12 @@ jobs:
           terraform_wrapper: false
 
       - name: Terraform Init & Apply (Infrastructure)
+        env:
+          TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd terraform
           terraform init -upgrade
-          terraform apply -auto-approve -var="github_token=${{ secrets.GITHUB_TOKEN }}"
+          terraform apply -auto-approve
 
       - name: Set up Python
         uses: actions/setup-python@65d7f2d534ac1bc67fcd62888c5f4f3d2cb2b236 # v4.7.1
