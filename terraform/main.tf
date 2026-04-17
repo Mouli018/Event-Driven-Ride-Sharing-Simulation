@@ -49,6 +49,11 @@ resource "helm_release" "argocd" {
     name  = "server.service.type"
     value = "LoadBalancer"
   }
+
+  set {
+    name  = "server.insecure"
+    value = "true"
+  }
 }
 
 # Install Prometheus/Grafana Stack via Helm
