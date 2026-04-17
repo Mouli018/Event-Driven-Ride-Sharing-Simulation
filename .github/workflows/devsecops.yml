@@ -34,8 +34,6 @@ jobs:
           cd terraform
           terraform init -upgrade
           terraform apply -auto-approve
-        env:
-          KUBECONFIG: /home/runner/.kube/config
 
       - name: Set up Python
         uses: actions/setup-python@v4
